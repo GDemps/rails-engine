@@ -1,24 +1,349 @@
-# README
+## Rails Engine API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Overview
+Rails Engine is a 1 week project completed by [Grant Dempsey](https://github.com/GDemps/rails-engine/tree/master) in Module 3(of 4) of the back-end program at Turing School of Software and Design. It is the back-end of mock E-Commerce application. It exposes an API with merchant, item, and revenue data loaded from CSV files. The front-end, [Rails Driver](https://github.com/GDemps/rails_driver), is responsible for consuming the API and interacting with users.
 
-Things you may want to cover:
+### Setup
 
-* Ruby version
+**Git Setup**
+```
+$ git clone git@github.com:GDemps/rails-engine.git
+$ cd rails-engine
+$ bundle install
+```
+**Database**  
+```
+$ rake db:{drop,create,migrate,seed}
+$ bundle install
+```
+**Testing**
+```
+$ bundle exec rspec
+```
 
-* System dependencies
+### Versions
+```
+  Rails 5.1.7
+  Ruby 2.5.3
+```
 
-* Configuration
+### Testing
+Rspec was used to test all of the endpoints. The front-end of the application that has a spec-harness which also tests all of the endpoints and is responsible for displaying the data can be found at [Rails Driver](https://github.com/GDemps/rails_driver)
 
-* Database creation
+### Schema
+![Schema](https://dbdiagram.io/d/5fdcaab89a6c525a03bb9653)
 
-* Database initialization
+### CRUD Endpoints  
 
-* How to run the test suite
+#### Index of an Item or Merchant
 
-* Services (job queues, cache servers, search engines, etc.)
+Request:
+```
+GET /api/v1/merchants
+```
+Response:
+```
+body:
+{
+  "data": [
+    {
+      "id": "1",
+        "type": "merchant",
+        "attributes": {
+          "name": "Awesome Store",
+        }
+    },
+    {
+      "id": "2",
+      "type": "merchant",
+      "attributes": {
+        "name": "Store of Fate",
+      }
+    }
+  ]
+}
+```
+#### Show an Item or Merchant
 
-* Deployment instructions
+Request:
+```
+GET /api/v1/items/1
+```
+Response:
+```
+body:
+{
+  "data": {
+      "id": "1",
+      "type": "item",
+      "attributes": {
+        "name": "Item Name",
+        "description": "Item Description",
+        "unit_price": "31163",
+        "merchant_id": "1"
+        }
+    }
+}
+```
+#### Create an Item or Merchant
 
-* ...
+Request:
+```
+POST /api/v1/merchants
+body:
+{
+  "attribute1": "value1",
+  "attribute2": "value2"
+}
+```
+Response:
+```
+body:
+{
+  "data": {
+    "id": "1",
+    "type": "merchant",
+    "attributes": {
+      "name": "Store Name"
+    }
+  }
+}
+```
+#### Update an Item or Merchant
+
+Request:
+```
+PATCH /api/v1/merchants/:id
+body:
+{
+  "attribute1": "value1",
+  "attribute2": "value2"
+}
+```
+Response:
+```
+body:
+{
+  "data": {
+    "id": "1",
+    "type": "merchant",
+    "attributes": {
+      "name": "Store Name"
+    }
+  }
+}
+```
+#### Destroy an Item or Merchant
+
+Request:
+```
+DELETE /api/v1/merchants/:id
+```
+Response:
+```
+body:
+{
+  "data": {
+    "id": "1",
+    "type": "merchant",
+    "attributes": {
+      "name": "Store Name"
+    }
+  }
+}
+```
+### Relationship Endpoints
+
+#### Index of items associated with a merchant
+
+Request:
+```
+GET /api/v1/merchants/:id/items
+```
+Response:
+```
+body:
+{
+  "data": [
+    {
+      "id": "1",
+        "type": "item",
+        "attributes": {
+          "name": "Item Name",
+          "description": "Item Description",
+          "unit_price": "31163",
+          "merchant_id": "1"
+        }
+    },
+    {
+      "id": "2",
+      "type": "item",
+        "attributes": {
+          "name": "Another Item Name",
+          "description": "Another Item Description",
+          "unit_price": "66543",
+          "merchant_id": "1"
+       }
+    }
+  ]
+}
+```
+
+#### Return the merchant associated with an item
+
+Request:
+```
+GET /api/v1/items/:id/merchant
+```
+Response:
+```
+body:
+{
+  "data": {
+    "id": "1",
+    "type": "merchant",
+    "attributes": {
+      "name": "Store Name"
+    }
+  }
+}
+```
+### Find Endpoints
+
+#### Single Finders for items and merchants
+
+Request:
+```
+GET /api/v1/merchants/find?name=ring
+```
+Response:
+```
+{
+  "data": {
+    "id": 4,
+    "type": "merchant",
+    "attributes": {
+      "name": "Ring World"
+    }
+  }
+}
+```
+
+#### Multi Finders for items and merchants
+Request:
+```
+GET /api/v1/merchants/find_all?name=ring
+```
+Response:
+```
+body:
+{
+  "data": [
+    {
+      "id": "4",
+      "type": "merchant",
+      "attributes": {
+        "name": "Ring World"
+      }
+    },
+    {
+      "id": "1",
+      "type": "merchant",
+      "attributes": {
+        "name": "Turing School"
+      }
+    }
+  ]
+}
+```
+### Business Intelligence Endpoints
+
+#### Merchants with most revenue
+
+Request:
+```
+GET /api/v1/merchants/most_revenue?quantity=2
+```
+Response:
+```
+body:
+{
+  "data": [
+    {
+      "id": "4",
+      "type": "merchant",
+      "attributes": {
+        "name": "Ring World"
+      }
+    },
+    {
+      "id": "1",
+      "type": "merchant",
+      "attributes": {
+        "name": "Turing School"
+      }
+    }
+  ]
+}
+```
+#### Merchants with most items sold
+Request:
+```
+GET /api/v1/merchants/most_items?quantity=2
+```
+Response:
+```
+body:
+{
+  "data": [
+    {
+      "id": "4",
+      "type": "merchant",
+      "attributes": {
+        "name": "Ring World"
+      }
+    },
+    {
+      "id": "1",
+      "type": "merchant",
+      "attributes": {
+        "name": "Turing School"
+      }
+    }
+  ]
+}
+```
+
+#### Revenue across date range
+```
+GET /api/v1/revenue?start=<start_date>&end=<end_date>
+```
+Response:
+```
+body:
+{
+  "data": {
+    "id": null,
+    "attributes": {
+      "revenue"  : 43201227.8000003
+    }
+  }
+}
+```
+#### Revenue for a merchant
+
+```
+GET /api/v1/merchants/:id/revenue
+```
+Response:
+```
+body:
+{
+  "data": {
+    "id": null,
+    "attributes": {
+      "revenue"  : 43201227.8000003
+    }
+  }
+}
+```
