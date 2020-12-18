@@ -1,17 +1,27 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
   namespace :api do
     namespace :v1 do
       namespace :merchants, path: '/merchants/:id' do
         resources :items, only: [:index]
+        get '/revenue', to: 'revenues#show'
       end
       namespace :items, path: '/items/:id' do
         get '/merchant', to: 'merchants#show'
       end
+      get '/merchants/find', to: 'merchants/search#show'
+      get '/merchants/find_all', to: 'merchants/search#index'
+      get '/merchants/most_revenue', to: 'merchants/revenues#index'
+      get '/merchants/most_items', to: 'merchants/items_sold#index'
+      get '/items/find', to: 'items/search#show'
+      get '/items/find_all', to: 'items/search#index'
       resources :merchants, except: [:new, :edit]
       resources :items, except: [:new, :edit]
+      resources :revenue, only: [:index]
     end
   end
+
+end
 
 # module Api
 #   module V1
@@ -23,5 +33,3 @@ Rails.application.routes.draw do
 #       end
 #     end
 #   end
-
-end
