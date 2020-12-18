@@ -31,7 +31,7 @@ $ bundle exec rspec
 Rspec was used to test all of the endpoints. The front-end of the application that has a spec-harness which also tests all of the endpoints and is responsible for displaying the data can be found at [Rails Driver](https://github.com/GDemps/rails_driver)
 
 ### Schema
-![Schema](https://dbdiagram.io/d/5fdcaab89a6c525a03bb9653)
+![Schema](https://i.imgur.com/oypTQ0p.png)
 
 ### CRUD Endpoints  
 
